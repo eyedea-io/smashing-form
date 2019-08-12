@@ -60,19 +60,25 @@ export function useForm<Values>(props: FormProps<Values>) {
     initialValues,
     errors: {},
     touched: {},
-    validate: (field?: string) => {
+    validate: async (field?: string) => {
       if (typeof validationSchema !== 'object') return
       form.isValidating = true
 
-      function clearErrors() {
+      try {
+        if (field && validationSchema.validateAt) {
+          await validationSchema.validateAt(field, form.values)
+        } else {
+          await validationSchema.validate(form.values, {
+            abortEarly: false,
+          })
+        }
+
         if (field) {
           form.setFieldError(field, undefined)
         } else {
           form.setErrors({})
         }
-      }
-
-      function handleErrors(err: any) {
+      } catch (err) {
         if (err.name === 'ValidationError') {
           handleYupErrors<Values>(err, form)
         } else {
@@ -84,33 +90,22 @@ export function useForm<Values>(props: FormProps<Values>) {
             )
           }
         }
-      }
-
-      function finish() {
+      } finally {
         form.isValidating = false
-      }
-
-      if (field && validationSchema.validateAt) {
-        validationSchema
-          .validateAt(field, form.values)
-          .then(clearErrors)
-          .catch(handleErrors)
-          .then(finish)
-      } else {
-        validationSchema
-          .validate(form.values, {
-            abortEarly: false,
-          })
-          .then(clearErrors)
-          .catch(handleErrors)
-          .then(finish)
       }
     },
     submit: async () => {
       if (typeof onSubmit === 'function') {
         form.isSubmitting = true
-        form.validate()
-        await onSubmit(form.values, form)
+        if (form.validateOnSubmit) {
+          await form.validate()
+
+          if (form.isValid) {
+            await onSubmit(form.values, form)
+          }
+        } else {
+          await onSubmit(form.values, form)
+        }
         form.isSubmitting = false
         form.submitCount++
       }

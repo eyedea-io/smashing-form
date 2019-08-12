@@ -94,7 +94,13 @@ function App() {
       friends: ['John', ''],
     },
     validationSchema,
-    onSubmit: async () => new Promise(resolve => setTimeout(resolve, 1000)),
+    onSubmit: async values =>
+      new Promise(resolve =>
+        setTimeout(() => {
+          console.log(values)
+          resolve()
+        }, 1000)
+      ),
   })
 
   return useObserver(() => (
