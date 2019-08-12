@@ -221,7 +221,7 @@ export function useForm<Values>(props: FormProps<Values>) {
             </props.component>
           )
         }
-        return <div>{form.errors[props.name]}</div>
+        return <div className={props.className}>{form.errors[props.name]}</div>
       }
       return null
     })
