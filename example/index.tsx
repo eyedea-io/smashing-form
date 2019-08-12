@@ -34,28 +34,33 @@ const validationSchema = yup.object().shape({
     .max(64, 'Password is too long.')
     .required('This field is required.'),
   social: yup.object().shape({
-    facebook: yup.string().url(),
+    facebook: yup
+      .string()
+      .url()
+      .required(),
     twitter: yup.string(),
   }),
   friends: yup.array(
-    yup.object().shape({
-      name: yup.string().max(32),
-    })
+    yup
+      .string()
+      .email()
+      .required()
   ),
 })
 
 const FriendItem: React.FC<{index: number}> = ({index}) => {
-  const {Field, form} = useFormContext()
+  const {Field, ErrorMessage, form} = useFormContext()
 
-  if (!Field || !form) return null
+  if (!Field || !form || !ErrorMessage) return null
 
   return useObserver(() => (
     <div>
       <Field
         component={Input.Text}
-        name={`friends.${index}.name`}
-        placeholder={`Friend ${index} name`}
+        name={`friends.${index}`}
+        placeholder={`Friend ${index}`}
       />
+      <ErrorMessage name={`friends.${index}`} />
       <button
         type="button"
         onClick={() => {
@@ -86,14 +91,7 @@ function App() {
         facebook: '',
         twitter: '',
       },
-      friends: [
-        {
-          name: 'John',
-        },
-        {
-          name: 'Jane',
-        },
-      ],
+      friends: ['John', ''],
     },
     validationSchema,
     onSubmit: async () => new Promise(resolve => setTimeout(resolve, 1000)),
@@ -123,6 +121,7 @@ function App() {
             name="social.twitter"
             placeholder="twitter"
           />
+          <ErrorMessage name="social.twitter" />
         </div>
         <div>
           <Field
@@ -130,21 +129,13 @@ function App() {
             name="social.facebook"
             placeholder="facebook"
           />
+          <ErrorMessage name="social.facebook" />
         </div>
         <FriendList items={form.values.friends} />
-        {/* <Observer>
-          {() => (
-            <React.Fragment>
-              {form.values.friends.map((_item, index) => (
-                <FriendItem key={index} index={index} />
-              ))}
-            </React.Fragment>
-          )}
-        </Observer> */}
         <button
           type="button"
           onClick={() => {
-            form.values.friends.push({name: ''})
+            form.values.friends.push('')
           }}
         >
           Add Friend

@@ -6,6 +6,7 @@ import isEqual from 'react-fast-compare'
 
 export const FormContext = React.createContext<{
   Field?: React.FC<FieldProps>
+  ErrorMessage?: React.FC<ErrorMessageProps>
   form?: FormState<any>
 }>({})
 
@@ -16,11 +17,14 @@ function handleYupErrors<Values>(
   form: FormState<Values>
 ) {
   if (yupError.path) {
-    form.setFieldError(yupError.path, yupError.message)
+    form.setFieldError(
+      yupError.path.replace(/\[(\d+)\]/g, '.$1'),
+      yupError.message
+    )
   } else {
     const errors: FormErrors = {}
     for (let err of yupError.inner) {
-      if (err.path) errors[err.path] = err.message
+      if (err.path) errors[err.path.replace(/\[(\d+)\]/g, '.$1')] = err.message
     }
     form.setErrors(errors)
   }
@@ -188,23 +192,9 @@ export function useForm<Values>(props: FormProps<Values>) {
     onBlur: handleBlur(field),
   })
 
-  const Field = (props: FieldProps) => {
-    const {component: Component, ...fieldProps} = props
-
-    return useObserver(() => (
-      <Component {...fieldProps} {...getFieldProps(fieldProps.name)} />
-    ))
-  }
-
-  const Form: React.FC<React.FormHTMLAttributes<{}>> = props => (
-    <FormContext.Provider value={{form, Field}}>
-      <form onSubmit={handleSubmit} {...props} />
-    </FormContext.Provider>
-  )
-
   const ErrorMessage: React.FC<ErrorMessageProps> = props => {
     return useObserver(() => {
-      const error = dot.get<string>(form.errors, props.name)
+      const error = form.errors[props.name]
 
       if (error) {
         if (typeof props.component === 'string') {
@@ -227,6 +217,20 @@ export function useForm<Values>(props: FormProps<Values>) {
       return null
     })
   }
+
+  const Field = (props: FieldProps) => {
+    const {component: Component, ...fieldProps} = props
+
+    return useObserver(() => (
+      <Component {...fieldProps} {...getFieldProps(fieldProps.name)} />
+    ))
+  }
+
+  const Form: React.FC<React.FormHTMLAttributes<{}>> = props => (
+    <FormContext.Provider value={{form, Field, ErrorMessage}}>
+      <form onSubmit={handleSubmit} {...props} />
+    </FormContext.Provider>
+  )
 
   autorun(() => {
     form.isValid = form.errors && Object.keys(form.errors).length === 0
