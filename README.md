@@ -1,20 +1,25 @@
-# smashing-forms
+# smashing-form
 
 > MobX powered forms in React
 
-[![NPM](https://img.shields.io/npm/v/smashing-forms.svg)](https://www.npmjs.com/package/smashing-forms)
+[![NPM](https://img.shields.io/npm/v/smashing-form.svg)](https://www.npmjs.com/package/smashing-form)
+
+- ⚡ Fast input rerenders - doesn't rerender whole form
+- 🥓 Well cooked api
+- 👌 Form validation based on [yup](https://github.com/jquense/yup)
+- ⚖ [It's light - 2kB](https://bundlephobia.com/result?p=smashing-form)
 
 ## Install
 
 ```bash
-npm install --save smashing-forms
+npm install --save smashing-form
 ```
 
 ## Usage
 
 ```tsx
 import * as React from 'react'
-import {useForm} from 'smashing-forms'
+import {useForm} from 'smashing-form'
 
 const TextInput = props => <input type="text" {...props} />
 
@@ -84,7 +89,7 @@ You can use [yup](https://github.com/jquense/yup) to validate form data.
 ```tsx
 import * as React from 'react'
 import * as yup from 'yup'
-import {useForm} from 'smashing-forms'
+import {useForm} from 'smashing-form'
 
 const TextInput = props => <input type="text" {...props} />
 
@@ -153,7 +158,7 @@ It contains the following state:
 You can access form state using context. `FormContext` and `useFormContext` are exported from package.
 
 ```tsx
-import {useFormContext, FormContext} from 'smashing-forms'
+import {useFormContext, FormContext} from 'smashing-form'
 
 const NestedComponent = () => {
   const {form} = useFormContext()
@@ -188,6 +193,21 @@ const MyForm = () => {
     </Form>
   )
 }
+```
+
+Manipulating array items:
+
+```tsx
+const {form} = useForm({
+  initialValues: {
+    friends: ['John', 'Jane'],
+  },
+})
+
+// Add new item
+form.values.friends.push('')
+// Remove first item
+form.values.friends.splice(0, 1)
 ```
 
 ### Form actions
