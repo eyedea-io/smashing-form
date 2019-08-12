@@ -10,6 +10,16 @@
   "bugs": {
     "url": "https://github.com/eyedea-io/smashing-form/issues"
   },
+  "keywords": [
+    "react",
+    "react-dom",
+    "form",
+    "validation",
+    "forms",
+    "react-hook",
+    "hook",
+    "smashing"
+  ],
   "homepage": "https://github.com/eyedea-io/smashing-form",
   "license": "MIT",
   "files": [
