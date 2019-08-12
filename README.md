@@ -15,7 +15,7 @@
 ## Install
 
 ```bash
-npm install --save @smashing/form
+npm install --save @smashing/form mobx mobx-react-lite
 ```
 
 ## Usage
