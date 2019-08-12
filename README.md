@@ -3,11 +3,12 @@
 > MobX powered forms in React
 
 [![NPM](https://img.shields.io/npm/v/smashing-form.svg)](https://www.npmjs.com/package/smashing-form)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/smashing-form)
 
 - ⚡ Fast input rerenders - doesn't rerender whole form
 - 🥓 Well cooked api
 - 👌 Form validation based on [yup](https://github.com/jquense/yup)
-- ⚖ [It's light - 2kB](https://bundlephobia.com/result?p=smashing-form)
+- ⚖ [It's lightweight](https://bundlephobia.com/result?p=smashing-form)
 
 ## Install
 
