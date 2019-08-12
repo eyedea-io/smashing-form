@@ -10,6 +10,9 @@
   "bugs": {
     "url": "https://github.com/eyedea-io/smashing-form/issues"
   },
+  "publishConfig": {
+    "access": "restricted"
+  },
   "keywords": [
     "react",
     "react-dom",
