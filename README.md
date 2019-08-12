@@ -10,6 +10,11 @@
 - 👌 Form validation based on [yup](https://github.com/jquense/yup)
 - ⚖ [It's lightweight](https://bundlephobia.com/result?p=smashing-form)
 
+## Examples
+
+- [Basic form with validation](https://codesandbox.io/s/smashing-form-clrsj)
+- [Array of fields](https://codesandbox.io/s/smashing-form-arrays-7jx0n)
+
 ## Install
 
 ```bash
