@@ -1,14 +1,14 @@
-# smashing-form
+# Smashing Form
 
 > MobX powered forms in React
 
-[![NPM](https://img.shields.io/npm/v/smashing-form.svg)](https://www.npmjs.com/package/smashing-form)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/smashing-form)
+[![NPM](https://img.shields.io/npm/v/smashing/form.svg)](https://www.npmjs.com/package/@smashing/form)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/smashing/form)
 
 - ⚡ Fast input rerenders - doesn't rerender whole form
 - 🥓 Well cooked api
 - 👌 Form validation based on [yup](https://github.com/jquense/yup)
-- ⚖ [It's lightweight](https://bundlephobia.com/result?p=smashing-form)
+- ⚖ [It's lightweight](https://bundlephobia.com/result?p=@smashing/form)
 
 ## Examples
 
@@ -18,14 +18,14 @@
 ## Install
 
 ```bash
-npm install --save smashing-form
+npm install --save @smashing/form
 ```
 
 ## Usage
 
 ```tsx
 import * as React from 'react'
-import {useForm} from 'smashing-form'
+import {useForm} from '@smashing/form'
 
 const TextInput = props => <input type="text" {...props} />
 
@@ -95,7 +95,7 @@ You can use [yup](https://github.com/jquense/yup) to validate form data.
 ```tsx
 import * as React from 'react'
 import * as yup from 'yup'
-import {useForm} from 'smashing-form'
+import {useForm} from '@smashing/form'
 
 const TextInput = props => <input type="text" {...props} />
 
@@ -164,7 +164,7 @@ It contains the following state:
 You can access form state using context. `FormContext` and `useFormContext` are exported from package.
 
 ```tsx
-import {useFormContext, FormContext} from 'smashing-form'
+import {useFormContext, FormContext} from '@smashing/form'
 
 const NestedComponent = () => {
   const {form} = useFormContext()

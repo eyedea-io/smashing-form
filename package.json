@@ -1,5 +1,5 @@
 {
-  "name": "smashing-form",
+  "name": "@smashing/form",
   "version": "0.1.5",
   "description": "MobX powered forms in React",
   "main": "dist/index.js",
@@ -28,6 +28,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
+    "prebuild": "rm -rf dist",
     "test": "tsdx test --env=jsdom",
     "prepare": "yarn build"
   },
@@ -74,15 +75,15 @@
   "size-limit": [
     {
       "path": "./dist/index.js",
-      "limit": "2 kB"
+      "limit": "3 kB"
     },
     {
-      "path": "./dist/smashing-form.esm.js",
-      "limit": "2 kB"
+      "path": "./dist/form.esm.js",
+      "limit": "3 kB"
     },
     {
-      "path": "./dist/smashing-form.cjs.production.min.js",
-      "limit": "2 kB"
+      "path": "./dist/form.cjs.production.min.js",
+      "limit": "3 kB"
     }
   ]
 }
