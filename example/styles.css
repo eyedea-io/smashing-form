@@ -1,0 +1,50 @@
+body {
+  margin: 32px;
+}
+
+.App {
+  font-family: sans-serif;
+  color: #666;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 32px;
+}
+
+pre {
+  padding: 12px;
+  background: #fafafa;
+  font-size: 12px;
+  margin: 0;
+}
+
+input {
+  border: 1px solid #e5e5e5;
+  padding: 8px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: rgba(67, 90, 111, 0.14) 0px 0px 2px inset,
+    rgb(87, 154, 217) 0px 0px 0px 1px inset,
+    rgba(16, 112, 202, 0.14) 0px 0px 0px 3px;
+}
+
+.actions {
+  display: grid;
+  column-gap: 8px;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  background-color: white;
+  background-image: linear-gradient(rgb(7, 136, 222), rgb(17, 106, 184));
+  box-shadow: rgba(67, 90, 111, 0.3) 0px 0px 0px 1px inset,
+    rgba(67, 90, 111, 0.06) 0px -1px 1px 0px inset;
+}
