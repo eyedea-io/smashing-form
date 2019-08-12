@@ -11,7 +11,7 @@
     "url": "https://github.com/eyedea-io/smashing-form/issues"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "keywords": [
     "react",
