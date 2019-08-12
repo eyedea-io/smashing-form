@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "MobX powered forms in React",
   "main": "dist/index.js",
-  "module": "dist/smashing-form.esm.js",
+  "module": "dist/form.esm.js",
   "typings": "dist/index.d.ts",
   "author": "EYEDEA AS",
   "repository": "eyedea-io/smashing-form",
