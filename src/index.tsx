@@ -204,7 +204,8 @@ export function useForm<Values>(props: FormProps<Values>) {
 
   const ErrorMessage: React.FC<ErrorMessageProps> = props => {
     return useObserver(() => {
-      const error = form.errors[props.name]
+      const error = dot.get<string>(form.errors, props.name)
+
       if (error) {
         if (typeof props.component === 'string') {
           return React.createElement(
@@ -217,11 +218,11 @@ export function useForm<Values>(props: FormProps<Values>) {
         } else if (typeof props.component === 'function') {
           return (
             <props.component className={props.className}>
-              {form.errors[props.name]}
+              {error}
             </props.component>
           )
         }
-        return <div className={props.className}>{form.errors[props.name]}</div>
+        return <div className={props.className}>{error}</div>
       }
       return null
     })
