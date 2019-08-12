@@ -5,7 +5,7 @@
 - ⚡ Fast input rerenders - doesn't rerender whole form
 - 🥓 Well cooked api
 - 👌 Form validation based on [yup](https://github.com/jquense/yup)
-- ⚖ [It's lightweight](https://bundlephobia.com/result?p=@smashing/form)
+- ⚖ [It's lightweight](https://bundlephobia.com/result?p=@smashing/form@latest)
 
 ## Examples
 
