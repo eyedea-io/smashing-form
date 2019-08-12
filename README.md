@@ -2,8 +2,7 @@
 
 > MobX powered forms in React
 
-[![NPM](https://img.shields.io/npm/v/smashing/form.svg)](https://www.npmjs.com/package/@smashing/form)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/smashing/form)
+![npm (scoped)](https://img.shields.io/npm/v/@smashing/form?style=for-the-badge) ![npm bundle size (scoped)](https://img.shields.io/bundlephobia/minzip/@smashing/form?style=for-the-badge)
 
 - ⚡ Fast input rerenders - doesn't rerender whole form
 - 🥓 Well cooked api
