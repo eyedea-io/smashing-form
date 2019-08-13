@@ -1,14 +1,10 @@
 import 'react-app-polyfill/ie11'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import {useForm, useFormContext} from '../.'
+import {useForm, useFormContext} from '../'
 import {useObserver, Observer, observer} from 'mobx-react-lite'
 import * as yup from 'yup'
 import './styles.css'
-
-const Input = {
-  Text: props => <input {...props} />,
-}
 
 const Message = props => <div style={{fontSize: 12, color: 'red'}} {...props} />
 
@@ -55,11 +51,7 @@ const FriendItem: React.FC<{index: number}> = ({index}) => {
 
   return useObserver(() => (
     <div>
-      <Field
-        component={Input.Text}
-        name={`friends.${index}`}
-        placeholder={`Friend ${index}`}
-      />
+      <Field name={`friends.${index}`} placeholder={`Friend ${index}`} />
       <ErrorMessage name={`friends.${index}`} />
       <button
         type="button"
@@ -109,32 +101,19 @@ function App() {
 
       <Form>
         <div>
-          <Field component={Input.Text} name="email" placeholder="email" />
+          <Field name="email" placeholder="email" />
           <ErrorMessage name="email" />
         </div>
         <div>
-          <Field
-            component={Input.Text}
-            name="password"
-            type="password"
-            placeholder="password"
-          />
+          <Field name="password" type="password" placeholder="password" />
           <CustomErrorMessage name="password" />
         </div>
         <div>
-          <Field
-            component={Input.Text}
-            name="social.twitter"
-            placeholder="twitter"
-          />
+          <Field name="social.twitter" placeholder="twitter" />
           <ErrorMessage name="social.twitter" />
         </div>
         <div>
-          <Field
-            component={Input.Text}
-            name="social.facebook"
-            placeholder="facebook"
-          />
+          <Field name="social.facebook" placeholder="facebook" />
           <ErrorMessage name="social.facebook" />
         </div>
         <FriendList items={form.values.friends} />

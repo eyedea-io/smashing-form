@@ -214,11 +214,20 @@ export function useForm<Values>(props: FormProps<Values>) {
   }
 
   const Field = (props: FieldProps) => {
-    const {component: Component, ...fieldProps} = props
+    const {component: Component = 'input', ...fieldProps} = props
 
-    return useObserver(() => (
-      <Component {...fieldProps} {...getFieldProps(fieldProps.name)} />
-    ))
+    return useObserver(() => {
+      if (typeof props.component === 'string') {
+        return React.createElement(props.component, {
+          ...fieldProps,
+          ...getFieldProps(fieldProps.name),
+        })
+      } else if (typeof props.component) {
+        return <Component {...fieldProps} {...getFieldProps(fieldProps.name)} />
+      }
+
+      return null
+    })
   }
 
   const Form: React.FC<React.FormHTMLAttributes<{}>> = props => (
@@ -301,7 +310,7 @@ type GenericFieldHTMLAttributes =
   | React.SelectHTMLAttributes<HTMLSelectElement>
   | React.TextareaHTMLAttributes<HTMLTextAreaElement>
 export type FieldProps = {
-  component: React.ComponentType<any>
+  component?: React.ComponentType<any> | string
   name: string
 } & GenericFieldHTMLAttributes
 export type ErrorMessageProps = {
