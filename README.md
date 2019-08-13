@@ -24,7 +24,7 @@ npm install --save @smashing/form mobx mobx-react-lite
 import * as React from 'react'
 import {useForm} from '@smashing/form'
 
-const TextInput = props => <input type="text" {...props} />
+const CustomTextInput = props => <input type="text" {...props} />
 
 export const MyForm = () => {
   // Use `useForm` hook. `initialValues` is the only required value.
@@ -40,8 +40,9 @@ export const MyForm = () => {
   return (
     <Form>
       {/* Each input should be wrapped in `Field` returned by `useForm` */}
-      <Field component={TextInput} name="email" />
-      <Field component={TextInput} name="password" />
+      <Field component={CustomTextInput} name="email" />
+      {/* "input" is default component used by field */}
+      <Field name="password" />
       <button type="submit">Submit</button>
     </Form>
   )
