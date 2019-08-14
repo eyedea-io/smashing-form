@@ -6,6 +6,10 @@ import {useObserver, Observer, observer} from 'mobx-react-lite'
 import * as yup from 'yup'
 import './styles.css'
 
+const Checkbox: React.FC<{
+  appearance: 'default'
+}> = props => <input type="checkbox" {...props} />
+
 const Message = props => <div style={{fontSize: 12, color: 'red'}} {...props} />
 
 const CustomErrorMessage = observer(({name}: {name: string}) => {
@@ -36,6 +40,9 @@ const validationSchema = yup.object().shape({
       .required(),
     twitter: yup.string(),
   }),
+  terms: yup.boolean(),
+  interests: yup.array(yup.string()),
+  gender: yup.string(),
   friends: yup.array(
     yup
       .string()
@@ -79,11 +86,14 @@ function App() {
     initialValues: {
       email: '',
       password: '',
+      terms: false,
+      interests: ['cosmos'],
       social: {
         facebook: '',
         twitter: '',
       },
       friends: ['John', ''],
+      gender: null,
     },
     validationSchema,
     onSubmit: async values =>
@@ -100,6 +110,50 @@ function App() {
       <Observer>{() => <pre>{JSON.stringify(form, null, 2)}</pre>}</Observer>
 
       <Form>
+        <label>
+          <Field component={Checkbox} name="terms" appearance="default" />
+          Terms
+        </label>
+        <div>
+          <label>
+            <Field
+              component={Checkbox}
+              type="checkbox"
+              name="interests"
+              value="cosmos"
+            />
+            Cosmos
+          </label>
+          <label>
+            <Field
+              component={Checkbox}
+              type="checkbox"
+              name="interests"
+              value="programming"
+            />
+            Programming
+          </label>
+        </div>
+        <div>
+          <label>
+            <Field
+              component={Checkbox}
+              type="radio"
+              name="gender"
+              value="male"
+            />
+            Male
+          </label>
+          <label>
+            <Field
+              component={Checkbox}
+              type="radio"
+              name="gender"
+              value="female"
+            />
+            Female
+          </label>
+        </div>
         <div>
           <Field name="email" placeholder="email" />
           <ErrorMessage name="email" />

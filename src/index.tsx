@@ -30,6 +30,33 @@ function handleYupErrors<Values>(
   }
 }
 
+function getValueForCheckbox(
+  currentValue: string | any[],
+  checked: boolean,
+  value: any
+) {
+  console.log({currentValue, checked, value})
+  if (value == 'true' || value == 'false') {
+    return !!checked
+  }
+
+  if (checked) {
+    return Array.isArray(currentValue) ? currentValue.concat(value) : [value]
+  }
+
+  if (!Array.isArray(currentValue)) {
+    return !!currentValue
+  }
+
+  const index = currentValue.indexOf(value)
+
+  if (index < 0) {
+    return currentValue
+  }
+
+  return currentValue.slice(0, index).concat(currentValue.slice(index + 1))
+}
+
 /**
  * @example
  * const {form} = useForm({
@@ -113,7 +140,7 @@ export function useForm<Values>(props: FormProps<Values>) {
     reset(nextState = {}) {
       form.isValidating = false
       form.setIsSubmitting(false)
-      form.setValues(nextState.values || initialValues)
+      form.values = nextState.values || initialValues
       form.setErrors(nextState.errors || {})
       form.setTouched(nextState.touched || {})
     },
@@ -161,9 +188,19 @@ export function useForm<Values>(props: FormProps<Values>) {
   }))
 
   const handleChange = (field: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<any> | string
   ) => {
-    form.setFieldValue(field, event.target.value)
+    if (typeof event !== 'string') {
+      const {type, checked, value} = event.target
+      const val = /checkbox/.test(type)
+        ? getValueForCheckbox(dot.get(form.values, field), checked, value)
+        : value
+
+      form.setFieldValue(field, val)
+    } else {
+      form.setFieldValue(field, event)
+    }
+
     when(() => form.validateOnChange, () => form.validate(field))
   }
 
@@ -181,11 +218,32 @@ export function useForm<Values>(props: FormProps<Values>) {
     when(() => form.validateOnBlur, () => form.validate(field))
   }
 
-  const getFieldProps = (field: string) => ({
-    value: dot.get(form.values, field),
-    onChange: handleChange(field),
-    onBlur: handleBlur(field),
-  })
+  const getFieldProps = (props: FieldProps) => {
+    const field: any = {
+      onChange: handleChange(props.name),
+      onBlur: handleBlur(props.name),
+      value: dot.get(form.values, props.name),
+    }
+
+    if (props.type === 'checkbox') {
+      if (props.value === undefined) {
+        field.checked = !!field.value
+      } else {
+        field.checked = !!(
+          Array.isArray(field.value) && ~field.value.indexOf(props.value)
+        )
+        field.value = props.value
+      }
+    } else if (props.type === 'radio') {
+      field.checked = field.value === props.value
+      field.value = props.value
+    } else if (props.multiple) {
+      field.value = field.value || []
+      field.multiple = true
+    }
+
+    return field
+  }
 
   const ErrorMessage: React.FC<ErrorMessageProps> = props => {
     return useObserver(() => {
@@ -220,10 +278,10 @@ export function useForm<Values>(props: FormProps<Values>) {
       if (typeof props.component === 'string') {
         return React.createElement(props.component, {
           ...fieldProps,
-          ...getFieldProps(fieldProps.name),
+          ...getFieldProps(fieldProps),
         })
       } else if (typeof props.component) {
-        return <Component {...fieldProps} {...getFieldProps(fieldProps.name)} />
+        return <Component {...fieldProps} {...getFieldProps(fieldProps)} />
       }
 
       return null
@@ -312,6 +370,7 @@ type GenericFieldHTMLAttributes =
 export type FieldProps = {
   component?: React.ComponentType<any> | string
   name: string
+  [key: string]: any
 } & GenericFieldHTMLAttributes
 export type ErrorMessageProps = {
   className?: string
