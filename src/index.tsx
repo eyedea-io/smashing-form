@@ -35,7 +35,6 @@ function getValueForCheckbox(
   checked: boolean,
   value: any
 ) {
-  console.log({currentValue, checked, value})
   if (value == 'true' || value == 'false') {
     return !!checked
   }
