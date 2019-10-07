@@ -270,7 +270,7 @@ export function useForm<Values>(props: FormProps<Values>) {
     })
   }
 
-  const Field = (props: FieldProps) => {
+  const Field = React.forwardRef<HTMLElement, FieldProps>((props, ref) => {
     const {component: Component = 'input', ...fieldProps} = props
 
     return useObserver(() => {
@@ -278,14 +278,17 @@ export function useForm<Values>(props: FormProps<Values>) {
         return React.createElement(props.component, {
           ...fieldProps,
           ...getFieldProps(fieldProps),
+          ref,
         })
       } else if (typeof props.component) {
-        return <Component {...fieldProps} {...getFieldProps(fieldProps)} />
+        return (
+          <Component {...fieldProps} {...getFieldProps(fieldProps)} ref={ref} />
+        )
       }
 
       return null
     })
-  }
+  })
 
   const Form: React.FC<React.FormHTMLAttributes<{}>> = props => (
     <FormContext.Provider value={{form, Field, ErrorMessage}}>

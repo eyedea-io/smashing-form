@@ -6,9 +6,12 @@ import {useObserver, Observer, observer} from 'mobx-react-lite'
 import * as yup from 'yup'
 import './styles.css'
 
-const Checkbox: React.FC<{
-  appearance: 'default'
-}> = props => <input type="checkbox" {...props} />
+const Checkbox = React.forwardRef<
+  HTMLInputElement,
+  {
+    appearance: 'default'
+  }
+>((props, ref) => <input type="checkbox" {...props} ref={ref} />)
 
 const Message = props => <div style={{fontSize: 12, color: 'red'}} {...props} />
 
@@ -104,6 +107,11 @@ function App() {
         }, 1000)
       ),
   })
+  const inputRef = React.useRef<null | HTMLInputElement>(null)
+
+  React.useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  }, [inputRef.current])
 
   return useObserver(() => (
     <div className="App">
@@ -111,7 +119,12 @@ function App() {
 
       <Form>
         <label>
-          <Field component={Checkbox} name="terms" appearance="default" />
+          <Field
+            component={Checkbox}
+            name="terms"
+            appearance="default"
+            ref={inputRef}
+          />
           Terms
         </label>
         <div>
