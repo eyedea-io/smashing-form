@@ -1,6 +1,6 @@
 {
   "name": "@smashing/form",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "MobX powered forms in React",
   "main": "dist/index.js",
   "module": "dist/form.esm.js",
