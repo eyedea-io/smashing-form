@@ -186,8 +186,15 @@ export function useForm<Values>(props: FormProps<Values>) {
     },
   }))
 
-  const handleChange = (field: string) => (
-    event: React.ChangeEvent<any> | string
+  const handleChange = (
+    field: string,
+    onChange: GenericFieldHTMLAttributes['onChange']
+  ) => (
+    event:
+      | React.ChangeEvent<HTMLInputElement> &
+          React.ChangeEvent<HTMLSelectElement> &
+          React.ChangeEvent<HTMLTextAreaElement>
+      | string
   ) => {
     if (typeof event !== 'string') {
       const {type, checked, value} = event.target
@@ -200,6 +207,10 @@ export function useForm<Values>(props: FormProps<Values>) {
       form.setFieldValue(field, event)
     }
 
+    if (typeof onChange === 'function' && typeof event !== 'string') {
+      onChange(event)
+    }
+
     when(() => form.validateOnChange, () => form.validate(field))
   }
 
@@ -210,17 +221,25 @@ export function useForm<Values>(props: FormProps<Values>) {
     form.submit()
   }
 
-  const handleBlur = (field: string) => (
-    _event: React.ChangeEvent<HTMLInputElement>
+  const handleBlur = (
+    field: string,
+    onBlur?: GenericFieldHTMLAttributes['onBlur']
+  ) => (
+    event: React.FocusEvent<HTMLInputElement> &
+      React.FocusEvent<HTMLSelectElement> &
+      React.FocusEvent<HTMLTextAreaElement>
   ) => {
     form.setFieldTouched(field, true)
+    if (typeof onBlur === 'function') {
+      onBlur(event)
+    }
     when(() => form.validateOnBlur, () => form.validate(field))
   }
 
   const getFieldProps = (props: FieldProps) => {
     const field: any = {
-      onChange: handleChange(props.name),
-      onBlur: handleBlur(props.name),
+      onChange: handleChange(props.name, props.onChange),
+      onBlur: handleBlur(props.name, props.onBlur),
       value: dot.get(form.values, props.name),
     }
 
@@ -270,12 +289,14 @@ export function useForm<Values>(props: FormProps<Values>) {
     })
   }
 
-  const Field = React.forwardRef<HTMLElement, FieldProps>((props, ref) => {
+  const Field: React.FC<
+    FieldProps & React.RefAttributes<any>
+  > = React.forwardRef<any, FieldProps>((props, ref) => {
     const {component: Component = 'input', ...fieldProps} = props
 
     return useObserver(() => {
       if (typeof props.component === 'string') {
-        return React.createElement(props.component, {
+        return React.createElement<FieldProps>(props.component, {
           ...fieldProps,
           ...getFieldProps(fieldProps),
           ref,
