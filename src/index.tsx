@@ -186,55 +186,58 @@ export function useForm<Values>(props: FormProps<Values>) {
     },
   }))
 
-  const handleChange = (
-    field: string,
-    onChange: GenericFieldHTMLAttributes['onChange']
-  ) => (
-    event:
-      | React.ChangeEvent<HTMLInputElement> &
-          React.ChangeEvent<HTMLSelectElement> &
-          React.ChangeEvent<HTMLTextAreaElement>
-      | string
-  ) => {
-    if (typeof event !== 'string') {
-      const {type, checked, value} = event.target
-      const val = /checkbox/.test(type)
-        ? getValueForCheckbox(dot.get(form.values, field), checked, value)
-        : value
+  const handleChange = React.useCallback(
+    (field: string, onChange: GenericFieldHTMLAttributes['onChange']) => (
+      event:
+        | React.ChangeEvent<HTMLInputElement> &
+            React.ChangeEvent<HTMLSelectElement> &
+            React.ChangeEvent<HTMLTextAreaElement>
+        | string
+    ) => {
+      if (typeof event !== 'string') {
+        const {type, checked, value} = event.target
+        const val = /checkbox/.test(type)
+          ? getValueForCheckbox(dot.get(form.values, field), checked, value)
+          : value
 
-      form.setFieldValue(field, val)
-    } else {
-      form.setFieldValue(field, event)
-    }
+        form.setFieldValue(field, val)
+      } else {
+        form.setFieldValue(field, event)
+      }
 
-    if (typeof onChange === 'function' && typeof event !== 'string') {
-      onChange(event)
-    }
+      if (typeof onChange === 'function' && typeof event !== 'string') {
+        onChange(event)
+      }
 
-    when(() => form.validateOnChange, () => form.validate(field))
-  }
+      when(() => form.validateOnChange, () => form.validate(field))
+    },
+    [form]
+  )
 
-  const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
-    if (event) {
-      event.preventDefault()
-    }
-    form.submit()
-  }
+  const handleSubmit = React.useCallback(
+    (event?: React.FormEvent<HTMLFormElement>) => {
+      if (event) {
+        event.preventDefault()
+      }
+      form.submit()
+    },
+    [form]
+  )
 
-  const handleBlur = (
-    field: string,
-    onBlur?: GenericFieldHTMLAttributes['onBlur']
-  ) => (
-    event: React.FocusEvent<HTMLInputElement> &
-      React.FocusEvent<HTMLSelectElement> &
-      React.FocusEvent<HTMLTextAreaElement>
-  ) => {
-    form.setFieldTouched(field, true)
-    if (typeof onBlur === 'function') {
-      onBlur(event)
-    }
-    when(() => form.validateOnBlur, () => form.validate(field))
-  }
+  const handleBlur = React.useCallback(
+    (field: string, onBlur?: GenericFieldHTMLAttributes['onBlur']) => (
+      event: React.FocusEvent<HTMLInputElement> &
+        React.FocusEvent<HTMLSelectElement> &
+        React.FocusEvent<HTMLTextAreaElement>
+    ) => {
+      form.setFieldTouched(field, true)
+      if (typeof onBlur === 'function') {
+        onBlur(event)
+      }
+      when(() => form.validateOnBlur, () => form.validate(field))
+    },
+    [form]
+  )
 
   const getFieldProps = (props: FieldProps) => {
     const field: any = {
@@ -263,58 +266,71 @@ export function useForm<Values>(props: FormProps<Values>) {
     return field
   }
 
-  const ErrorMessage: React.FC<ErrorMessageProps> = props => {
-    return useObserver(() => {
-      const error = form.errors[props.name]
+  const ErrorMessage: React.FC<ErrorMessageProps> = React.useCallback(
+    props => {
+      return useObserver(() => {
+        const error = form.errors[props.name]
 
-      if (error) {
-        if (typeof props.component === 'string') {
-          return React.createElement(
-            props.component,
-            {
-              className: props.className,
-            },
-            error
-          )
-        } else if (typeof props.component === 'function') {
-          return (
-            <props.component className={props.className}>
-              {error}
-            </props.component>
-          )
+        if (error) {
+          if (typeof props.component === 'string') {
+            return React.createElement(
+              props.component,
+              {
+                className: props.className,
+              },
+              error
+            )
+          } else if (typeof props.component === 'function') {
+            return (
+              <props.component className={props.className}>
+                {error}
+              </props.component>
+            )
+          }
+          return <div className={props.className}>{error}</div>
         }
-        return <div className={props.className}>{error}</div>
-      }
-      return null
-    })
-  }
+        return null
+      })
+    },
+    [form]
+  )
 
   const Field: React.FC<
     FieldProps & React.RefAttributes<any>
-  > = React.forwardRef<any, FieldProps>((props, ref) => {
-    const {component: Component = 'input', ...fieldProps} = props
+  > = React.useCallback(
+    React.forwardRef<any, FieldProps>((props, ref) => {
+      const {component: Component = 'input', ...fieldProps} = props
 
-    return useObserver(() => {
-      if (typeof props.component === 'string') {
-        return React.createElement<FieldProps>(props.component, {
-          ...fieldProps,
-          ...getFieldProps(fieldProps),
-          ref,
-        })
-      } else if (typeof props.component) {
-        return (
-          <Component {...fieldProps} {...getFieldProps(fieldProps)} ref={ref} />
-        )
-      }
+      return useObserver(() => {
+        if (typeof props.component === 'string') {
+          return React.createElement<FieldProps>(props.component, {
+            ...fieldProps,
+            ...getFieldProps(fieldProps),
+            ref,
+          })
+        } else if (typeof props.component) {
+          return (
+            <Component
+              {...fieldProps}
+              {...getFieldProps(fieldProps)}
+              ref={ref}
+            />
+          )
+        }
 
-      return null
-    })
-  })
+        return null
+      })
+    }),
+    []
+  )
 
-  const Form: React.FC<React.FormHTMLAttributes<{}>> = props => (
-    <FormContext.Provider value={{form, Field, ErrorMessage}}>
-      <form onSubmit={handleSubmit} {...props} />
-    </FormContext.Provider>
+  const Form: React.FC<React.FormHTMLAttributes<{}>> = React.useCallback(
+    props => (
+      <FormContext.Provider value={{form, Field, ErrorMessage}}>
+        <form onSubmit={handleSubmit} {...props} />
+      </FormContext.Provider>
+    ),
+    [handleSubmit, handleBlur, handleChange, form]
   )
 
   autorun(() => {
