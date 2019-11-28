@@ -75,6 +75,12 @@ const FriendItem: React.FC<{index: number}> = ({index}) => {
   ))
 }
 
+const CustomInput = props => {
+  return (
+    <input {...props} onChange={event => props.onChange(event.target.value)} />
+  )
+}
+
 const FriendList: React.FC<{items: any[]}> = observer(({items}) => (
   <div>
     {items.map((_item, index) => (
@@ -174,6 +180,14 @@ function App() {
         <div>
           <Field name="password" type="password" placeholder="password" />
           <CustomErrorMessage name="password" />
+        </div>
+        <div>
+          <Field
+            name="email"
+            placeholder="Custom input bound to email field"
+            component={CustomInput}
+          />
+          <ErrorMessage name="email" />
         </div>
         <div>
           <Field name="social.twitter" placeholder="twitter" />

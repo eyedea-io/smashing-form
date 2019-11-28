@@ -187,14 +187,28 @@ export function useForm<Values>(props: FormProps<Values>) {
   }))
 
   const handleChange = React.useCallback(
-    (field: string, onChange: GenericFieldHTMLAttributes['onChange']) => (
+    (
+      field: string,
+      onChange: GenericFieldHTMLAttributes['onChange'] | ((event: any) => void)
+    ) => (
       event:
         | React.ChangeEvent<HTMLInputElement> &
             React.ChangeEvent<HTMLSelectElement> &
             React.ChangeEvent<HTMLTextAreaElement>
         | string
+        | boolean
+        | number
+        | any[]
+        | {
+            [key: string]: any
+          }
     ) => {
-      if (typeof event !== 'string') {
+      if (
+        !Array.isArray(event) &&
+        typeof event === 'object' &&
+        event !== null &&
+        event.target
+      ) {
         const {type, checked, value} = event.target
         const val = /checkbox/.test(type)
           ? getValueForCheckbox(dot.get(form.values, field), checked, value)
@@ -205,7 +219,7 @@ export function useForm<Values>(props: FormProps<Values>) {
         form.setFieldValue(field, event)
       }
 
-      if (typeof onChange === 'function' && typeof event !== 'string') {
+      if (typeof onChange === 'function') {
         onChange(event)
       }
 
