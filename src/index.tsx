@@ -87,7 +87,18 @@ export function useForm<Values>(props: FormProps<Values>) {
     errors: {},
     touched: {},
     validate: async (field?: string) => {
-      if (typeof validationSchema !== 'object') return
+      if (typeof validationSchema !== 'object') {
+        if (field) {
+          // Clear related field error on change
+          form.setFieldError(field)
+        } else {
+          // There is no validation schema so errors were set manually by developer.
+          // Probably errors received from backend were used. Before next
+          // submission we need to reset errors.
+          form.setErrors({})
+        }
+        return
+      }
       form.isValidating = true
 
       try {
