@@ -26,6 +26,7 @@ const CustomErrorMessage = observer(({name}: {name: string}) => {
 })
 
 const validationSchema = yup.object().shape({
+  avatar: yup.mixed(),
   email: yup
     .string()
     .email('Email is not valid.')
@@ -172,6 +173,10 @@ function App() {
             />
             Female
           </label>
+        </div>
+        <div>
+          <Field name="avatar" placeholder="avatar" type="file" />
+          <ErrorMessage name="avatar" />
         </div>
         <div>
           <Field name="email" placeholder="email" />

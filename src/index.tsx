@@ -56,6 +56,13 @@ function getValueForCheckbox(
   return currentValue.slice(0, index).concat(currentValue.slice(index + 1))
 }
 
+function getValueForFileInput(inputOrFile: HTMLInputElement | File) {
+  if (inputOrFile instanceof File) {
+    return inputOrFile
+  }
+  return inputOrFile.files ? inputOrFile.files.item(0) : undefined
+}
+
 /**
  * @example
  * const {form} = useForm({
@@ -223,6 +230,8 @@ export function useForm<Values>(props: FormProps<Values>) {
         const {type, checked, value} = event.target
         const val = /checkbox/.test(type)
           ? getValueForCheckbox(dot.get(form.values, field), checked, value)
+          : /file/.test(type)
+          ? getValueForFileInput(event.target)
           : value
 
         form.setFieldValue(field, val)
