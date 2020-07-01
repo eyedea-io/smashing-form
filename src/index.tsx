@@ -443,8 +443,8 @@ type GenericFieldHTMLAttributes =
 export type FieldProps = {
   component?: React.ComponentType<any> | string
   name: string
-  type: React.InputHTMLAttributes<HTMLInputElement>['type']
-  multiple: false
+  type?: React.InputHTMLAttributes<HTMLInputElement>['type']
+  multiple?: false
 } & GenericFieldHTMLAttributes
 export type ErrorMessageProps = {
   className?: string
